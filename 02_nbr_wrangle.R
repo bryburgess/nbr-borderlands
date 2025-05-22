@@ -1,10 +1,8 @@
-# NBR Borderlands Project
+# NBR Borderlands Project: Roping and wrangling that ornery high plains data
 
 # Created 2025-05-20
-# Updated 2025-05-21
+# Updated 2025-05-22
 # Author: Bryan Burgess
-
-# Reading and wrangling all the data. 
 
 # Header ------------------------------------------------------------------
 
@@ -20,18 +18,23 @@ options(scipen = 999)
 # Country list ------------------------------------------------------------
 
 country_list <- c("Afghanistan",
+                  "Afghanistan, Islamic Rep. of",
                   "Bhutan",
                   "Brunei", 
                   "Brunei Darussalam",
                   "Democratic People's Republic of Korea",
+                  "Korea, Dem. People's Rep. of",
                   "India", 
                   "Indonesia", 
                   "Japan", 
                   "Kazakhstan", 
+                  "Kazakhstan, Rep. of",
                   "Kyrgyzstan", 
                   "Kyrgyz Republic",
+                  "Kyrgyz Rep.",
                   "Laos", 
                   "Lao People's Democratic Republic",
+                  "Lao People's Dem. Rep.",
                   "Malaysia",
                   "Mongolia",
                   "Myanmar",
@@ -40,9 +43,12 @@ country_list <- c("Afghanistan",
                   "Pakistan", 
                   "Philippines",
                   "Republic of Korea", 
+                  "Korea, Rep. of",
                   "Russia", 
+                  "Russian Federation",
                   "South Korea",
                   "Tajikistan",
+                  "Tajikistan, Rep. of",
                   "Vietnam",
                   "Viet Nam"
 )
@@ -54,6 +60,7 @@ country_list <- c("Afghanistan",
 setwd(data_dir)
 
 centroids <- readRDS("borderlands_centroids.rds")
+deflators <- read_csv("deflators.csv")
 
 # Read TUFF and deflate to 2024
 setwd("./AidDatas_Global_Chinese_Development_Finance_Dataset_Version_3_0")
@@ -72,8 +79,6 @@ pub_dip <- read_csv("ChinesePublicDiplomacy.csv") |>
   filter(receiving_country %in% country_list)
 # Fixing non-numeric columns
 pub_dip$year <- as.numeric(pub_dip$year)
-
-
 
 cis_ccs <- read_csv("Confucius-Institutes.csv") |>
   janitor::clean_names() |> 
@@ -103,7 +108,8 @@ fdi <- read_csv("CDIS_04-09-2025 12-29-05-21_timeSeries.csv") |>
 # Special Economic Zones
 # Projects located within SEZs
 sez <- openxlsx::read.xlsx("Bdls_PRCSEZ_Clean.xlsx", sheet = 2) |>
-  janitor::clean_names()
+  janitor::clean_names() %>%
+  mutate(amount_constant_usd_2024 = (amount_constant_usd2017 * 100)/ 79.84376)
 
 # United Front Presence
 # NEED BASE DATA COLLECTION 
@@ -185,6 +191,128 @@ sec_04_joint_exercise <- mil_dip %>%
 
 # Development Indicators --------------------------------------------------
 ## dev_01_currency_swap -----------------------------------------------------
+# From https://www.cfr.org/tracker/central-bank-currency-swaps-tracker#chapter-title-0-6
+
+dev_01_currency_swap <- tribble(
+  ~year, ~recipient, ~dev_01_currency_swap_line_extant, ~dev_01_currency_swap_usd,
+  2010, "South Korea", "Y", 0,
+  2010, "Indonesia", "Y", 0,
+  2010, "Malaysia", "Y", 0,
+  2011, "Kazakhstan", "Y", 0,
+  2011, "Mongolia", "Y", 0,
+  2011, "South Korea", "Y", 0, 
+  2011, "Indonesia", "Y", 0,
+  2011, "Malaysia", "Y", 0,
+  2011, "Pakistan", "Y", 0,
+  2012, "Mongolia", "Y", 330000000,
+  2012, "South Korea", "Y", 0,
+  2012, "Indonesia", "Y", 0, 
+  2012, "Malaysia", "Y", 0,
+  2012, "Pakistan", "Y", 0,
+  2012, "Kazakhstan", "Y", 0, 
+  2013, "Mongolia", "Y", 640000000,
+  2013, "South Korea", "Y", 10000000,
+  2013, "Indonesia", "Y", 0,
+  2013, "Pakistan", "Y", 820000000,
+  2013, "Kazakhstan", "Y", 0,
+  2014, "Mongolia", "Y", 640000000,
+  2014, "Russia", "Y", 1500000,
+  2014, "South Korea", "Y", 10000000,
+  2014, "Indonesia", "Y", 0,
+  2014, "Malaysia", "Y", 0, 
+  2014, "Pakistan", "Y", 820000000,
+  2014, "Kazakhstan", "Y", 0, 
+  2015, "Mongolia", "Y", 640000000,
+  2015, "Russia", "Y", 130000000,
+  2015, "South Korea", "Y", 10000000,
+  2015, "Indonesia", "Y", 0,
+  2015, "Malaysia", "Y", 0,
+  2015, "Pakistan", "Y", 820000000,
+  2015, "Tajikistan", "Y", 100000,
+  2015, "Kazakhstan", "Y", 0,
+  2016, "Mongolia", "Y", 640000000,
+  2016, "Russia", "Y", 130000000,
+  2016, "South Korea", "Y", 10000000,
+  2016, "Indonesia", "Y", 0,
+  2016, "Malaysia", "Y", 0,
+  2016, "Pakistan", "Y", 820000000,
+  2016, "Tajikistan", "Y", 100000, 
+  2016, "Kazakhstan", "Y", 0,
+  2017, "Mongolia", "Y", 640000000,
+  2017, "Russia", "Y", 130000000,
+  2017, "South Korea", "Y", 10000000,
+  2017, "Indonesia", "Y", 0,
+  2017, "Malaysia", "Y", 0,
+  2017, "Pakistan", "Y", 820000000,
+  2017, "Tajikistan", "Y", 100000, 
+  2017, "Kazakhstan", "Y", 0,
+  2018, "Mongolia", "Y", 640000000,
+  2018, "Russia", "Y", 130000000,
+  2018, "South Korea", "Y", 10000000,
+  2018, "Japan", "Y", 0,
+  2018, "Indonesia", "Y", 0,
+  2018, "Malaysia", "Y", 0,
+  2018, "Pakistan", "Y", 1500000000,
+  2018, "Tajikistan", "Y", 100000,
+  2018, "Kazakhstan", "Y", 0,
+  2019, "Mongolia", "Y", 640000000,
+  2019, "Russia", "Y", 130000000,
+  2019, "Japan", "Y", 0,
+  2019, "South Korea", "Y", 10000000,
+  2019, "Indonesia", "Y", 0,
+  2019, "Malaysia", "Y", 0,
+  2019, "Pakistan", "Y", 1500000000,
+  2019, "Kazakhstan", "Y", 0,
+  2020, "Mongolia", "Y", 640000000,
+  2020, "Russia", "Y", 130000000,
+  2020, "South Korea", "Y", 10000000,
+  2020, "Japan", "Y", 0,
+  2020, "Indonesia", "Y", 0,
+  2020, "Malaysia", "Y", 1100000000,
+  2020, "Lao People's Democratic Republic", "Y", 300000000,
+  2020, "Pakistan", "Y", 1500000000,
+  2020, "Kazakhstan", "Y", 0,
+  2021, "Mongolia", "Y", 640000000,
+  2021, "Russia", "Y", 130000000,
+  2021, "South Korea", "Y", 10000000,
+  2021, "Japan", "Y", 0,
+  2021, "Indonesia", "Y", 0,
+  2021, "Malaysia", "Y", 1100000000,
+  2021, "Lao People's Democratic Republic", "Y", 300000000,
+  2021, "Pakistan", "Y", 1500000000,
+  2021, "Kazakhstan", "Y", 0,
+  2022, "Mongolia", "Y", 640000000,
+  2022, "Russia", "Y", 130000000,
+  2022, "South Korea", "Y", 10000000,
+  2022, "Japan", "Y", 0,
+  2022, "Indonesia", "Y", 0,
+  2022, "Malaysia", "Y", 1100000000,
+  2022, "Lao People's Democratic Republic", "Y", 300000000,
+  2022, "Pakistan", "Y", 1500000000,
+  2022, "Kazakhstan", "Y", 0,
+  2023, "Mongolia", "Y", 640000000,
+  2023, "Russia", "Y", 130000000,
+  2023, "South Korea", "Y", 10000000,
+  2023, "Japan", "Y", 0,
+  2023, "Indonesia", "Y", 0,
+  2023, "Malaysia", "Y", 1100000000,
+  2023, "Lao People's Democratic Republic", "Y", 300000000,
+  2023, "Pakistan", "Y", 1500000000,
+  2023, "Kazakhstan", "Y", 0,
+  2024, "Mongolia", "Y", 640000000,
+  2024, "Russia", "Y", 130000000,
+  2024, "South Korea", "Y", 10000000,
+  2024, "Japan", "Y", 0,
+  2024, "Indonesia", "Y", 0,
+  2024, "Malaysia", "Y", 1100000000,
+  2024, "Pakistan", "Y", 1500000000,
+  2024, "Kazakhstan", "Y", 0
+)
+
+dev_01_currency_swap <- left_join(dev_01_currency_swap, deflators,
+                                  by = "year") %>%
+  mutate(dev_01_currency_swap_usd = (dev_01_currency_swap_usd * 100) / gdpdef) %>%
+  select(-gdpdef)
 
 ## dev_02_infrastructure -----------------------------------------------------
 dev_02_infrastructure <- tuff %>%
@@ -198,14 +326,161 @@ dev_02_infrastructure <- tuff %>%
          dev_02_infrastructure_ct)
 
 ## dev_03_fdi -----------------------------------------------------
+# Mirror data should be used with caution as
+# they have limitations. For example, some relevant counterparts of the compiling
+# economy may not participate in the CDIS, or may not provide information because of
+# confidentiality reasons or because the data fall below a reporting threshold.
 
+# What does derived data mean?
+#   Derived data for a given economy are data for this economy calculated based on mirror
+# information. For a given economy A with inward investment from economy B, its
+# derived inward data would be the outward investment reported by B in economy A.
+# Similarly, for this given economy A with outward investment in economy B, its derived
+# outward data would be the inward investment reported by B from economy A. The CDIS
+# database contains indicators with derived data (inward direct investment positions,
+# derived; inward equity positions, derived; etc.). Users can build their own queries with
+# derived data (See Query tab).
+
+fdi_cats <- fdi %>%
+  select(-`...23`) %>%
+  pivot_longer(cols = c(8:22), names_to = "year", values_to = "usd") %>%
+  janitor::clean_names() %>%
+  filter(country_name %in% c("China, P.R.: Hong Kong",
+                             "China, P.R.: Macao",
+                             "China, P.R.: Mainland"),
+         counterpart_country_name %in% country_list)
+table(fdi_cats$counterpart_country_name)
+table(fdi_cats$indicator_name)
+
+dev_03_fdi <- fdi %>%
+  select(-`...23`) %>%
+  pivot_longer(cols = c(8:22), names_to = "year", values_to = "usd") %>%
+  janitor::clean_names() %>%
+  filter(attribute == "Value",
+         country_name %in% c("China, P.R.: Hong Kong",
+                             "China, P.R.: Macao",
+                             "China, P.R.: Mainland"),
+         counterpart_country_name %in% country_list,
+         indicator_name %in% c("Outward Direct Investment Positions, Derived, US Dollars",
+                               "Outward Direct Investment Positions, US Dollars")) %>%
+  pivot_wider(names_from = "indicator_name", values_from = "usd") %>%
+  janitor::clean_names() %>%
+  mutate(outward_direct_investment_positions_us_dollars = as.numeric(outward_direct_investment_positions_us_dollars),
+         outward_direct_investment_positions_derived_us_dollars = as.numeric(outward_direct_investment_positions_derived_us_dollars))
+
+dev_03_fdi <- dev_03_fdi %>%
+  group_by(year, counterpart_country_name) %>%
+  summarise(dev_03_fdi_usd = sum(outward_direct_investment_positions_us_dollars, na.rm = T),
+            dev_03_fdi_derived_usd = sum(outward_direct_investment_positions_derived_us_dollars, na.rm = T))
+dev_03_fdi$dev_03_fdi_usd[dev_03_fdi$dev_03_fdi_usd == 0] <- NA
+dev_03_fdi$dev_03_fdi_derived_usd[dev_03_fdi$dev_03_fdi_derived_usd == 0] <- NA
+sum(is.na(dev_03_fdi$dev_03_fdi_usd))
+sum(is.na(dev_03_fdi$dev_03_fdi_derived_usd))
+
+dev_03_fdi <- dev_03_fdi %>%
+  left_join(deflators, by = c("year")) %>%
+  mutate(dev_03_fdi_usd = (dev_03_fdi_usd * 100) / gdpdef, 
+         dev_03_fdi_derived_usd = (dev_03_fdi_derived_usd * 100) / gdpdef)
+  select(year, 
+         recipient = counterpart_country_name, 
+         dev_03_fdi_usd,
+         dev_03_fdi_derived_usd) %>%
+  mutate(year = as.numeric(year))
 
 ## dev_04_sez -----------------------------------------------------
-# NNeed to do some crative calculating of unique SEZs here. 
+# Need to do some creative calculating of unique SEZs here. 
 # Confirm against IISS data: https://chinaconnects.iiss.org
+
+sez_locations <- tribble(
+  ~project_id, ~economic_zone,
+  46420, "Bitung Special Economic Zone",
+  61426, "Bitung Special Economic Zone",
+  61427, "Sei Mangkei Special Economic Zone",
+  66200, "Morowali Industrial Park",
+  69125, "Sei Mangkei Special Economic Zone",
+  73314, "China-Indonesia Economic and Trade Cooperation Zone",
+  40299, "Park of Innovative Technologies Almaty",
+  55029, "National Industrial Petrochemical Technopark Special Economic Zone",
+  70646, "Chemical Park Taraz Special Economic Zone",
+  54374, "Kara-Suu Industrial Zone",
+  64770, "Saysettha Comprehensive Development Zone",
+  64771, "Saysettha Comprehensive Development Zone",
+  64777, "Savan-Seno Special Economic Zone",
+  67552, "Saysettha Comprehensive Development Zone",
+  67560, "Mohan-Boten Economic Zone",
+  62477, "Perai Free Industrial Zone",
+  62478, "Perai Free Industrial Zone",
+  68942, "Zamyn-Uud Free Zone", 
+  72020, "Khan-Uul District Development Zone",
+  63820, "Thilawa Special Economic Zone",
+  64310, "Thilawa Special Economic Zone",
+  73299, "Thaton Township Industrial Zone",
+  65016, "Rason Special Economic Zone",
+  35306, "Duddar Export Processing Zone",
+  53723, "Gwadar Port Free Zone and Export Processing Zone",
+  63671, "Clark Freeport Zone",
+  34478, "Ninh Phuc Industrial Zone",
+  46222, "Zhongtai Dangara Agriculture and Textile Industrial Park",
+  52904, "Port Qasim Industrial Park",
+  62336, "Malaysia-China Kuantan Industrial Park",
+  62338, "Malaysia-China Kuantan Industrial Park",
+  63303, "My Phuoc Industrial Park",
+  63674, "Long Giang Industrial Park",
+  66207, "Morowali Industrial Park",
+  66216, "Morowali Industrial Park",
+  69488, "Morowali Industrial Park",
+  85817, "Morowali Industrial Park", 
+  86021, "My Phuoc Industrial Park", 
+  86372, "Salambigar Industrial Park"
+)
+
+sez <- left_join(sez, sez_locations, by = c("project_id"))
+
+sez_val_ct <- sez %>%
+  group_by(commitment_year, recipient) %>%
+  summarise(dev_04_sez_usd = sum(amount_constant_usd_2024),
+            dev_04_sez_proj_ct = n())
+
+sez_unique <- sez %>%
+  group_by(commitment_year, recipient, economic_zone) %>%
+  summarise(zone_ct = n()) %>%
+  ungroup() %>%
+  group_by(commitment_year, recipient) %>%
+  summarise(dev_04_sez_unique_site = n())
+
+dev_04_sez <- full_join(sez_val_ct, sez_unique,
+                        by = c("commitment_year", "recipient")) %>%
+  select(year = commitment_year,
+         everything())
 
 # Civilization Indicators -------------------------------------------------
 ## civ_01_united_front -----------------------------------------------------
+# 2019 data derived from: https://jamestown.org/program/the-united-front-work-department-goes-global-the-worldwide-expansion-of-the-council-for-the-promotion-of-the-peaceful-reunification-of-china/
+
+civ_01_united_front <- tribble(
+  ~recipient, ~civ_01_united_front_presence, 
+   "Afghanistan", "N", 
+   "Bhutan", "N", 
+   "Brunei Darussalam", "N", 
+   "Democratic People's Republic of Korea", "N",
+   "India", "N",
+   "Indonesia", "Y", 
+   "Japan", "Y", 
+   "Kazakhstan", "N",
+   "Kyrgyz Republic", "Y", 
+   "Lao People's Democratic Republic", "Y", 
+   "Malaysia", "Y", 
+   "Mongolia", "N", 
+   "Myanmar", "N", 
+   "Nepal", "N",
+   "Pakistan","N", 
+   "Philippines", "Y", 
+   "Russia", "Y", 
+   "South Korea", "Y", 
+   "Tajikistan", "N",
+   "Viet Nam", "N"
+)
+
 ## civ_02_healthcare -----------------------------------------------------
 civ_02_healthcare <- tuff %>%
   filter(sector_name == "HEALTH") %>%
@@ -271,7 +546,9 @@ civ_06_ciccs <- pub_dip %>%
          recipient = receiving_country,
          civ_06_ci_ct = outbound_political_visits,
          civ_06_cc_ct = inbound_political_visits) %>%
-  mutate(civ_06_ci_cc_ct = civ_06_ci_ct + civ_06_cc_ct)
+  mutate(civ_06_ci_cc_ct = civ_06_ci_ct + civ_06_cc_ct) %>%
+  select(year,
+         everything())
 
 
 # Fix countries -----------------------------------------------------------
@@ -299,6 +576,24 @@ sec_04_joint_exercise$recipient[sec_04_joint_exercise$recipient == "North Korea"
 sec_04_joint_exercise$recipient[sec_04_joint_exercise$recipient == "Vietnam"] <- "Viet Nam"
 # Tuff, it's fine
 table(dev_02_infrastructure$recipient)
+
+table(dev_03_fdi$recipient)
+dev_03_fdi$recipient[dev_03_fdi$recipient == "Afghanistan, Islamic Rep. of"] <- "Afghanistan"
+dev_03_fdi$recipient[dev_03_fdi$recipient == "Kazakhstan, Rep. of"] <- "Kazakhstan"
+dev_03_fdi$recipient[dev_03_fdi$recipient == "Korea, Dem. People's Rep. of"] <- "Democratic People's Republic of Korea"
+dev_03_fdi$recipient[dev_03_fdi$recipient == "Korea, Rep. of"] <- "South Korea"
+dev_03_fdi$recipient[dev_03_fdi$recipient == "Kyrgyz Rep."] <- "Kyrgyz Republic"
+dev_03_fdi$recipient[dev_03_fdi$recipient == "Lao People's Dem. Rep."] <- "Lao People's Democratic Republic"
+dev_03_fdi$recipient[dev_03_fdi$recipient == "Russian Federation"] <- "Russia"
+dev_03_fdi$recipient[dev_03_fdi$recipient == "Tajikistan, Rep. of"] <- "Tajikistan"
+dev_03_fdi$recipient[dev_03_fdi$recipient == "Vietnam"] <- "Viet Nam"
+
+table(dev_04_sez$recipient)
+dev_04_sez$recipient[dev_04_sez$recipient == "Brunei"] <- "Brunei Darussalam"
+dev_04_sez$recipient[dev_04_sez$recipient == "Kyrgyzstan"] <- "Kyrgyz Republic"
+dev_04_sez$recipient[dev_04_sez$recipient == "Laos"] <- "Lao People's Democratic Republic"
+dev_04_sez$recipient[dev_04_sez$recipient == "North Korea"] <- "Democratic People's Republic of Korea"
+dev_04_sez$recipient[dev_04_sez$recipient == "Vietnam"] <- "Viet Nam"
 
 # Tuff, it's fine
 table(civ_02_healthcare$recipient)
@@ -356,7 +651,13 @@ dash_data <- full_join(sec_01_arms_transfers, sec_02_surveillance,
             by = c("year", "recipient")) %>%
   full_join(sec_04_joint_exercise, 
             by = c("year", "recipient")) %>%
+  full_join(dev_01_currency_swap, 
+            by = c("year", "recipient")) %>%
   full_join(dev_02_infrastructure,
+            by = c("year", "recipient")) %>%
+  full_join(dev_03_fdi,
+            by = c("year", "recipient")) %>%
+  full_join(dev_04_sez,
             by = c("year", "recipient")) %>%
   full_join(civ_02_healthcare, 
             by = c("year", "recipient")) %>%
@@ -368,10 +669,45 @@ dash_data <- full_join(sec_01_arms_transfers, sec_02_surveillance,
             by = c("year", "recipient")) %>%
   full_join(civ_06_ciccs,
             by = c("year", "recipient")) %>%
-  left_join(centroids, by = c("recipient"))
+  full_join(civ_01_united_front, 
+            by = c("recipient")) %>%
+  left_join(centroids, by = c("recipient")) %>%
+  select("year", 
+         "recipient", 
+         "sec_01_arms_transfer_tiv", 
+         "sec_01_arms_transfer_tiv_delivered", 
+         "sec_01_arms_transfer_orders_ct", 
+         "sec_01_missing_transfer_tiv", 
+         "sec_02_surveillance_usd", 
+         "sec_02_surveillance_ct", 
+         "sec_03_military_engagement_ct", 
+         "sec_04_joint_exercise_ct", 
+         "dev_01_currency_swap_line_extant", 
+         "dev_01_currency_swap_usd", 
+         "dev_02_infrastructure_usd", 
+         "dev_02_infrastructure_ct", 
+         "dev_03_fdi_usd", 
+         "dev_03_fdi_derived_usd", 
+         "dev_04_sez_usd", 
+         "dev_04_sez_proj_ct", 
+         "dev_04_sez_unique_site", 
+         "civ_01_united_front_presence", 
+         "civ_02_healthcare_usd", 
+         "civ_02_healthcare_ct", 
+         "civ_03_outbound_visits_ct", 
+         "civ_03_inbound_visits_ct", 
+         "civ_03_total_visits_ct", 
+         "civ_04_csps_ct", 
+         "civ_05_judicial_engagement_ct", 
+         "civ_06_ci_ct", 
+         "civ_06_cc_ct", 
+         "civ_06_ci_cc_ct", 
+         "lat", 
+         "lon") %>%
+  arrange(year, recipient)
 
 table(dash_data$recipient)
-
+dash_data$dev_01_currency_swap_line_extant[is.na(dash_data$dev_01_currency_swap_line_extant)] <- "N"
 
 # Write data --------------------------------------------------------------
 setwd(datawrapper)
@@ -380,5 +716,7 @@ setwd(datawrapper)
 # write_csv(dash_data, "borderlands_datawrapper_v0.1.csv")
 
 # v0.2 2025-05-21
-write_csv(dash_data, "borderlands_datawrapper_v0.2.csv")
+# write_csv(dash_data, "borderlands_datawrapper_v0.2.csv")
 
+# v1.0 2025-05-21
+# write_csv(dash_data, "borderlands_datawrapper_v1.0.csv")
