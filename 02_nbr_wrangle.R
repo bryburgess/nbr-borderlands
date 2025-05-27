@@ -1,7 +1,7 @@
 # NBR Borderlands Project: Roping and wrangling that ornery high plains data
 
 # Created 2025-05-20
-# Updated 2025-05-22
+# Updated 2025-05-27
 # Author: Bryan Burgess
 
 # Header ------------------------------------------------------------------
@@ -365,7 +365,8 @@ dev_03_fdi <- fdi %>%
                                "Outward Direct Investment Positions, US Dollars")) %>%
   pivot_wider(names_from = "indicator_name", values_from = "usd") %>%
   janitor::clean_names() %>%
-  mutate(outward_direct_investment_positions_us_dollars = as.numeric(outward_direct_investment_positions_us_dollars),
+  mutate(year = as.numeric(year),
+         outward_direct_investment_positions_us_dollars = as.numeric(outward_direct_investment_positions_us_dollars),
          outward_direct_investment_positions_derived_us_dollars = as.numeric(outward_direct_investment_positions_derived_us_dollars))
 
 dev_03_fdi <- dev_03_fdi %>%
@@ -380,7 +381,7 @@ sum(is.na(dev_03_fdi$dev_03_fdi_derived_usd))
 dev_03_fdi <- dev_03_fdi %>%
   left_join(deflators, by = c("year")) %>%
   mutate(dev_03_fdi_usd = (dev_03_fdi_usd * 100) / gdpdef, 
-         dev_03_fdi_derived_usd = (dev_03_fdi_derived_usd * 100) / gdpdef)
+         dev_03_fdi_derived_usd = (dev_03_fdi_derived_usd * 100) / gdpdef) %>%
   select(year, 
          recipient = counterpart_country_name, 
          dev_03_fdi_usd,
@@ -544,11 +545,14 @@ civ_06_ciccs <- pub_dip %>%
          !is.na(year)) %>%
   select(year, 
          recipient = receiving_country,
-         civ_06_ci_ct = outbound_political_visits,
-         civ_06_cc_ct = inbound_political_visits) %>%
-  mutate(civ_06_ci_cc_ct = civ_06_ci_ct + civ_06_cc_ct) %>%
-  select(year,
-         everything())
+         civ_06_ci_ct = confucius_institutes,
+         civ_06_cc_ct = confucius_classrooms) %>%
+  mutate(civ_06_ci_ct = as.numeric(civ_06_ci_ct),
+         civ_06_cc_ct = as.numeric(civ_06_cc_ct))
+  
+civ_06_ciccs[is.na(civ_06_ciccs)] <- 0
+civ_06_ciccs <- civ_06_ciccs %>%
+  mutate(civ_06_ci_cc_ct = civ_06_ci_ct + civ_06_cc_ct) 
 
 
 # Fix countries -----------------------------------------------------------
@@ -709,6 +713,9 @@ dash_data <- full_join(sec_01_arms_transfers, sec_02_surveillance,
 table(dash_data$recipient)
 dash_data$dev_01_currency_swap_line_extant[is.na(dash_data$dev_01_currency_swap_line_extant)] <- "N"
 
+dash_data$dev_01_currency_swap_line_extant[is.na(dash_data$dev_01_currency_swap_line_extant)] <- "N"
+
+
 # Write data --------------------------------------------------------------
 setwd(datawrapper)
 
@@ -718,5 +725,5 @@ setwd(datawrapper)
 # v0.2 2025-05-21
 # write_csv(dash_data, "borderlands_datawrapper_v0.2.csv")
 
-# v1.0 2025-05-21
-# write_csv(dash_data, "borderlands_datawrapper_v1.0.csv")
+# v1.0 2025-05-27
+write_csv(dash_data, "borderlands_datawrapper_v1.0.csv")
