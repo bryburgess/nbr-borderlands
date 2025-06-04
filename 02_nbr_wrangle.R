@@ -1,8 +1,18 @@
 # NBR Borderlands Project: Roping and wrangling that ornery high plains data
 
 # Created 2025-05-20
-# Updated 2025-05-27
+# Updated 2025-06-03
 # Author: Bryan Burgess
+
+# Share w. John coverage for new countries: 
+     # "Thailand" Needs currency swap, sez, upf
+     # "Cambodia",  Needs currency swap, sez, upf
+     # "Bangladesh",  Needs currency swap, sez, upf - missing judicial
+     # "Singapore", Needs currency swap, sez, upf
+     # "Turkmenistan",  Needs currency swap, sez, upf - missing judicial
+     # "Uzbekistan" Needs currency swap, sez, upf
+# Git push 
+
 
 # Header ------------------------------------------------------------------
 
@@ -50,7 +60,14 @@ country_list <- c("Afghanistan",
                   "Tajikistan",
                   "Tajikistan, Rep. of",
                   "Vietnam",
-                  "Viet Nam"
+                  "Viet Nam",
+                  #Map affordance countries for 
+                  "Thailand",
+                  "Cambodia", 
+                  "Bangladesh",
+                  "Singapore",
+                  "Turkmenistan", 
+                  "Uzbekistan"
 )
 
 
@@ -198,22 +215,29 @@ dev_01_currency_swap <- tribble(
   2010, "South Korea", "Y", 0,
   2010, "Indonesia", "Y", 0,
   2010, "Malaysia", "Y", 0,
+  2010, "Singapore", "Y", 0,
   2011, "Kazakhstan", "Y", 0,
   2011, "Mongolia", "Y", 0,
   2011, "South Korea", "Y", 0, 
   2011, "Indonesia", "Y", 0,
   2011, "Malaysia", "Y", 0,
   2011, "Pakistan", "Y", 0,
+  2011, "Singapore", "Y", 0,
+  2011, "Thailand", "Y", 0,
   2012, "Mongolia", "Y", 330000000,
   2012, "South Korea", "Y", 0,
   2012, "Indonesia", "Y", 0, 
   2012, "Malaysia", "Y", 0,
   2012, "Pakistan", "Y", 0,
   2012, "Kazakhstan", "Y", 0, 
+  2012, "Singapore", "Y", 4000000,
+  2012, "Thailand", "Y", 82000000,
   2013, "Mongolia", "Y", 640000000,
   2013, "South Korea", "Y", 10000000,
   2013, "Indonesia", "Y", 0,
   2013, "Pakistan", "Y", 820000000,
+  2013, "Singapore", "Y", 4000000,
+  2013, "Thailand", "Y", 82000000,
   2013, "Kazakhstan", "Y", 0,
   2014, "Mongolia", "Y", 640000000,
   2014, "Russia", "Y", 1500000,
@@ -222,6 +246,8 @@ dev_01_currency_swap <- tribble(
   2014, "Malaysia", "Y", 0, 
   2014, "Pakistan", "Y", 820000000,
   2014, "Kazakhstan", "Y", 0, 
+  2014, "Singapore", "Y", 1600000000,
+  2014, "Thailand", "Y", 82000000,
   2015, "Mongolia", "Y", 640000000,
   2015, "Russia", "Y", 130000000,
   2015, "South Korea", "Y", 10000000,
@@ -230,6 +256,8 @@ dev_01_currency_swap <- tribble(
   2015, "Pakistan", "Y", 820000000,
   2015, "Tajikistan", "Y", 100000,
   2015, "Kazakhstan", "Y", 0,
+  2015, "Singapore", "Y", 1600000000,
+  2015, "Thailand", "Y", 82000000,
   2016, "Mongolia", "Y", 640000000,
   2016, "Russia", "Y", 130000000,
   2016, "South Korea", "Y", 10000000,
@@ -238,6 +266,8 @@ dev_01_currency_swap <- tribble(
   2016, "Pakistan", "Y", 820000000,
   2016, "Tajikistan", "Y", 100000, 
   2016, "Kazakhstan", "Y", 0,
+  2016, "Singapore", "Y", 1600000000,
+  2016, "Thailand", "Y", 82000000,
   2017, "Mongolia", "Y", 640000000,
   2017, "Russia", "Y", 130000000,
   2017, "South Korea", "Y", 10000000,
@@ -246,6 +276,8 @@ dev_01_currency_swap <- tribble(
   2017, "Pakistan", "Y", 820000000,
   2017, "Tajikistan", "Y", 100000, 
   2017, "Kazakhstan", "Y", 0,
+  2017, "Singapore", "Y", 1600000000,
+  2017, "Thailand", "Y", 82000000,
   2018, "Mongolia", "Y", 640000000,
   2018, "Russia", "Y", 130000000,
   2018, "South Korea", "Y", 10000000,
@@ -255,6 +287,9 @@ dev_01_currency_swap <- tribble(
   2018, "Pakistan", "Y", 1500000000,
   2018, "Tajikistan", "Y", 100000,
   2018, "Kazakhstan", "Y", 0,
+  2018, "Singapore", "Y", 1600000000,
+  2018, "Thailand", "Y", 82000000,
+  2018, "Thailand", "Y", 82000000,
   2019, "Mongolia", "Y", 640000000,
   2019, "Russia", "Y", 130000000,
   2019, "Japan", "Y", 0,
@@ -263,6 +298,8 @@ dev_01_currency_swap <- tribble(
   2019, "Malaysia", "Y", 0,
   2019, "Pakistan", "Y", 1500000000,
   2019, "Kazakhstan", "Y", 0,
+  2019, "Singapore", "Y", 1600000000,
+  2019, "Thailand", "Y", 82000000,
   2020, "Mongolia", "Y", 640000000,
   2020, "Russia", "Y", 130000000,
   2020, "South Korea", "Y", 10000000,
@@ -272,6 +309,8 @@ dev_01_currency_swap <- tribble(
   2020, "Lao People's Democratic Republic", "Y", 300000000,
   2020, "Pakistan", "Y", 1500000000,
   2020, "Kazakhstan", "Y", 0,
+  2020, "Singapore", "Y", 1600000000,
+  2020, "Thailand", "Y", 82000000,
   2021, "Mongolia", "Y", 640000000,
   2021, "Russia", "Y", 130000000,
   2021, "South Korea", "Y", 10000000,
@@ -281,6 +320,8 @@ dev_01_currency_swap <- tribble(
   2021, "Lao People's Democratic Republic", "Y", 300000000,
   2021, "Pakistan", "Y", 1500000000,
   2021, "Kazakhstan", "Y", 0,
+  2021, "Singapore", "Y", 2300000000,
+  2021, "Thailand", "Y", 82000000,
   2022, "Mongolia", "Y", 640000000,
   2022, "Russia", "Y", 130000000,
   2022, "South Korea", "Y", 10000000,
@@ -290,6 +331,8 @@ dev_01_currency_swap <- tribble(
   2022, "Lao People's Democratic Republic", "Y", 300000000,
   2022, "Pakistan", "Y", 1500000000,
   2022, "Kazakhstan", "Y", 0,
+  2022, "Singapore", "Y", 2300000000,
+  2022, "Thailand", "Y", 82000000,
   2023, "Mongolia", "Y", 640000000,
   2023, "Russia", "Y", 130000000,
   2023, "South Korea", "Y", 10000000,
@@ -299,6 +342,8 @@ dev_01_currency_swap <- tribble(
   2023, "Lao People's Democratic Republic", "Y", 300000000,
   2023, "Pakistan", "Y", 1500000000,
   2023, "Kazakhstan", "Y", 0,
+  2023, "Singapore", "Y", 2300000000,
+  2023, "Thailand", "Y", 82000000,
   2024, "Mongolia", "Y", 640000000,
   2024, "Russia", "Y", 130000000,
   2024, "South Korea", "Y", 10000000,
@@ -306,7 +351,9 @@ dev_01_currency_swap <- tribble(
   2024, "Indonesia", "Y", 0,
   2024, "Malaysia", "Y", 1100000000,
   2024, "Pakistan", "Y", 1500000000,
-  2024, "Kazakhstan", "Y", 0
+  2024, "Kazakhstan", "Y", 0,
+  2024, "Singapore", "Y", 2300000000,
+  2024, "Thailand", "Y", 82000000
 )
 
 dev_01_currency_swap <- left_join(dev_01_currency_swap, deflators,
@@ -479,7 +526,13 @@ civ_01_united_front <- tribble(
    "Russia", "Y", 
    "South Korea", "Y", 
    "Tajikistan", "N",
-   "Viet Nam", "N"
+   "Viet Nam", "N",
+   "Thailand", "Y",
+   "Cambodia", "Y",
+   "Bangladesh", "N",
+   "Singapore", "N",
+   "Turkemenistan", "N", 
+   "Uzkbekistan", "N"
 )
 
 ## civ_02_healthcare -----------------------------------------------------
@@ -726,4 +779,7 @@ setwd(datawrapper)
 # write_csv(dash_data, "borderlands_datawrapper_v0.2.csv")
 
 # v1.0 2025-05-27
-write_csv(dash_data, "borderlands_datawrapper_v1.0.csv")
+# write_csv(dash_data, "borderlands_datawrapper_v1.0.csv")
+
+# v1.1 2025-06-03 - Include THA, KHM, BGD, SGP, TKM, UZB for map testing
+write_csv(dash_data, "borderlands_datawrapper_v1.1.csv")

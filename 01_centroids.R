@@ -1,7 +1,7 @@
 # NBR Borderlands Project: Making some quick centroids for the dashboard
 
 # Created 2025-04-23
-# Updated 2025-05-20
+# Updated 2025-06-04
 # Author: Bryan Burgess
 
 # Header ------------------------------------------------------------------
@@ -36,7 +36,14 @@ centroids <- tribble(~recipient, ~lat, ~lon,
   "Russia", 64.6863136, 97.7453061, 
   "South Korea", 36.6383920, 127.6961188,
   "Tajikistan", 38.6281733, 70.8156541,
-  "Viet Nam", 15.9266657, 107.9650855
+  "Viet Nam", 15.9266657, 107.9650855,
+  # Additional countries for Map Testing
+  "Thailand", 14.8971921, 100.8327300,
+  "Cambodia", 12.5433216, 104.8144914,
+  "Bangladesh", 24.4769288, 90.2934413,
+  "Singapore", 1.3571070, 103.8194992, 
+  "Turkmenistan", 39.3763807, 59.3924609,
+  "Uzbekistan", 41.3237300, 63.9528098
 )
 
 
