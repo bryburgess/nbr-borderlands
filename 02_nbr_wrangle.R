@@ -1,16 +1,19 @@
 # NBR Borderlands Project: Roping and wrangling that ornery high plains data
 
 # Created 2025-05-20
-# Updated 2025-06-03
+# Updated 2025-07-05
 # Author: Bryan Burgess
 
 # Share w. John coverage for new countries: 
-     # "Thailand" Needs currency swap, sez, upf
-     # "Cambodia",  Needs currency swap, sez, upf
-     # "Bangladesh",  Needs currency swap, sez, upf - missing judicial
-     # "Singapore", Needs currency swap, sez, upf
-     # "Turkmenistan",  Needs currency swap, sez, upf - missing judicial
-     # "Uzbekistan" Needs currency swap, sez, upf
+     # "Thailand"
+     # "Cambodia"
+     # "Bangladesh" missing judicial
+     # "Singapore"
+     # "Turkmenistan" - missing judicial
+     # "Uzbekistan"
+  # Last two Countries:
+    # "Sri Lanka", judicial
+    # "Maldives", judicial 
 # Git push 
 
 
@@ -67,7 +70,9 @@ country_list <- c("Afghanistan",
                   "Bangladesh",
                   "Singapore",
                   "Turkmenistan", 
-                  "Uzbekistan"
+                  "Uzbekistan",
+                  "Sri Lanka", 
+                  "Maldives"
 )
 
 
@@ -124,10 +129,15 @@ fdi <- read_csv("CDIS_04-09-2025 12-29-05-21_timeSeries.csv") |>
 
 # Special Economic Zones
 # Projects located within SEZs
-sez <- openxlsx::read.xlsx("Bdls_PRCSEZ_Clean.xlsx", sheet = 2) |>
-  janitor::clean_names() %>%
-  mutate(amount_constant_usd_2024 = (amount_constant_usd2017 * 100)/ 79.84376)
-
+# Projects pulled from 3.0 were 2021, the dataset NBR provided was 2.0. 
+# Better to pull from full TUFF
+sez_raw <- openxlsx::read.xlsx("Bdls_PRCSEZ_Clean.xlsx", sheet = 2) |>
+  janitor::clean_names()
+  
+sez <- tuff %>%
+  filter(aid_data_record_id %in% sez_raw$project_id, 
+         recommended_for_aggregates == "Yes")
+  
 # United Front Presence
 # NEED BASE DATA COLLECTION 
 
@@ -224,6 +234,7 @@ dev_01_currency_swap <- tribble(
   2011, "Pakistan", "Y", 0,
   2011, "Singapore", "Y", 0,
   2011, "Thailand", "Y", 0,
+  2011, "Uzbekistan", "Y", 0,
   2012, "Mongolia", "Y", 330000000,
   2012, "South Korea", "Y", 0,
   2012, "Indonesia", "Y", 0, 
@@ -232,6 +243,7 @@ dev_01_currency_swap <- tribble(
   2012, "Kazakhstan", "Y", 0, 
   2012, "Singapore", "Y", 4000000,
   2012, "Thailand", "Y", 82000000,
+  2012, "Uzbekistan", "Y", 0,
   2013, "Mongolia", "Y", 640000000,
   2013, "South Korea", "Y", 10000000,
   2013, "Indonesia", "Y", 0,
@@ -239,6 +251,7 @@ dev_01_currency_swap <- tribble(
   2013, "Singapore", "Y", 4000000,
   2013, "Thailand", "Y", 82000000,
   2013, "Kazakhstan", "Y", 0,
+  2013, "Uzbekistan", "Y", 0,
   2014, "Mongolia", "Y", 640000000,
   2014, "Russia", "Y", 1500000,
   2014, "South Korea", "Y", 10000000,
@@ -248,6 +261,8 @@ dev_01_currency_swap <- tribble(
   2014, "Kazakhstan", "Y", 0, 
   2014, "Singapore", "Y", 1600000000,
   2014, "Thailand", "Y", 82000000,
+  2014, "Uzbekistan", "Y", 0,
+  2014, "Sri Lanka", "Y", 0,
   2015, "Mongolia", "Y", 640000000,
   2015, "Russia", "Y", 130000000,
   2015, "South Korea", "Y", 10000000,
@@ -258,6 +273,7 @@ dev_01_currency_swap <- tribble(
   2015, "Kazakhstan", "Y", 0,
   2015, "Singapore", "Y", 1600000000,
   2015, "Thailand", "Y", 82000000,
+  2015, "Sri Lanka", "Y", 0,
   2016, "Mongolia", "Y", 640000000,
   2016, "Russia", "Y", 130000000,
   2016, "South Korea", "Y", 10000000,
@@ -268,6 +284,7 @@ dev_01_currency_swap <- tribble(
   2016, "Kazakhstan", "Y", 0,
   2016, "Singapore", "Y", 1600000000,
   2016, "Thailand", "Y", 82000000,
+  2016, "Sri Lanka", "Y", 0,
   2017, "Mongolia", "Y", 640000000,
   2017, "Russia", "Y", 130000000,
   2017, "South Korea", "Y", 10000000,
@@ -278,6 +295,7 @@ dev_01_currency_swap <- tribble(
   2017, "Kazakhstan", "Y", 0,
   2017, "Singapore", "Y", 1600000000,
   2017, "Thailand", "Y", 82000000,
+  2017, "Sri Lanka", "Y", 0,
   2018, "Mongolia", "Y", 640000000,
   2018, "Russia", "Y", 130000000,
   2018, "South Korea", "Y", 10000000,
@@ -322,6 +340,7 @@ dev_01_currency_swap <- tribble(
   2021, "Kazakhstan", "Y", 0,
   2021, "Singapore", "Y", 2300000000,
   2021, "Thailand", "Y", 82000000,
+  2021, "Sri Lanka", "Y", 1600000000,
   2022, "Mongolia", "Y", 640000000,
   2022, "Russia", "Y", 130000000,
   2022, "South Korea", "Y", 10000000,
@@ -333,6 +352,7 @@ dev_01_currency_swap <- tribble(
   2022, "Kazakhstan", "Y", 0,
   2022, "Singapore", "Y", 2300000000,
   2022, "Thailand", "Y", 82000000,
+  2022, "Sri Lanka", "Y", 1600000000,
   2023, "Mongolia", "Y", 640000000,
   2023, "Russia", "Y", 130000000,
   2023, "South Korea", "Y", 10000000,
@@ -344,6 +364,7 @@ dev_01_currency_swap <- tribble(
   2023, "Kazakhstan", "Y", 0,
   2023, "Singapore", "Y", 2300000000,
   2023, "Thailand", "Y", 82000000,
+  2023, "Sri Lanka", "Y", 1600000000,
   2024, "Mongolia", "Y", 640000000,
   2024, "Russia", "Y", 130000000,
   2024, "South Korea", "Y", 10000000,
@@ -353,7 +374,8 @@ dev_01_currency_swap <- tribble(
   2024, "Pakistan", "Y", 1500000000,
   2024, "Kazakhstan", "Y", 0,
   2024, "Singapore", "Y", 2300000000,
-  2024, "Thailand", "Y", 82000000
+  2024, "Thailand", "Y", 82000000,
+  2024, "Sri Lanka", "Y", 1600000000
 )
 
 dev_01_currency_swap <- left_join(dev_01_currency_swap, deflators,
@@ -479,14 +501,23 @@ sez_locations <- tribble(
   69488, "Morowali Industrial Park",
   85817, "Morowali Industrial Park", 
   86021, "My Phuoc Industrial Park", 
-  86372, "Salambigar Industrial Park"
+  86372, "Salambigar Industrial Park",
+  92546, "Sihanoukville Special Economic Zone",
+  62471, "Sihanoukville Special Economic Zone",
+  92547, "Sihanoukville Special Economic Zone",
+  62469, "Sihanoukville Special Economic Zone",
+  64410, "Luoyong Industrial Zone",
+  95798, "Luoyong Industrial Zone",
+  95799, "Luoyong Industrial Zone",
+  54149, "Angren Special Economic Zone",
+  72507, "Navoi Special Economic Zone"
 )
 
-sez <- left_join(sez, sez_locations, by = c("project_id"))
+sez <- left_join(sez, sez_locations, by = c("aid_data_record_id" = "project_id"))
 
 sez_val_ct <- sez %>%
   group_by(commitment_year, recipient) %>%
-  summarise(dev_04_sez_usd = sum(amount_constant_usd_2024),
+  summarise(dev_04_sez_usd = sum(adjusted_amount_constant_usd_2024, na.rm = T),
             dev_04_sez_proj_ct = n())
 
 sez_unique <- sez %>%
@@ -532,7 +563,9 @@ civ_01_united_front <- tribble(
    "Bangladesh", "N",
    "Singapore", "N",
    "Turkemenistan", "N", 
-   "Uzkbekistan", "N"
+   "Uzkbekistan", "N",
+   "Sri Lanka", "N",
+   "Maldives", "N"
 )
 
 ## civ_02_healthcare -----------------------------------------------------
@@ -573,6 +606,8 @@ civ_04_csps <- pub_dip %>%
          civ_04_csps_ct = content_sharing_partnerships)
 
 ## civ_05_judicial_engagement --------------------------------------
+# Manual update for Supreme People's Court (SPC) and its foreign counterparts in China's 20 land and maritime border neighbors. The data was pulled from press releases on the websites of the SPC, the Shanghai Cooperation Organization (SCO), BRICS, and ASEAN
+
 civ_05_judicial_engagement <- judicial %>%
   group_by(year, bdl_country) %>%
   summarise(civ_05_judicial_engagement_ct = n()) %>%
@@ -782,4 +817,7 @@ setwd(datawrapper)
 # write_csv(dash_data, "borderlands_datawrapper_v1.0.csv")
 
 # v1.1 2025-06-03 - Include THA, KHM, BGD, SGP, TKM, UZB for map testing
-write_csv(dash_data, "borderlands_datawrapper_v1.1.csv")
+# write_csv(dash_data, "borderlands_datawrapper_v1.1.csv")
+
+# v1.2 2025-07-05 - Include LKA and MDV for map testing
+write_csv(dash_data, "borderlands_datawrapper_v1.2.csv")
