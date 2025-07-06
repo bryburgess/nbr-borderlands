@@ -7,13 +7,13 @@
 # Share w. John coverage for new countries: 
      # "Thailand"
      # "Cambodia"
-     # "Bangladesh" missing judicial
+     # "Bangladesh"
      # "Singapore"
-     # "Turkmenistan" - missing judicial
+     # "Turkmenistan"
      # "Uzbekistan"
   # Last two Countries:
-    # "Sri Lanka", judicial
-    # "Maldives", judicial 
+    # "Sri Lanka"
+    # "Maldives" 
 # Git push 
 
 
@@ -252,6 +252,7 @@ dev_01_currency_swap <- tribble(
   2013, "Thailand", "Y", 82000000,
   2013, "Kazakhstan", "Y", 0,
   2013, "Uzbekistan", "Y", 0,
+  2013, "Malaysia", "Y", 0,
   2014, "Mongolia", "Y", 640000000,
   2014, "Russia", "Y", 1500000,
   2014, "South Korea", "Y", 10000000,
@@ -306,7 +307,6 @@ dev_01_currency_swap <- tribble(
   2018, "Tajikistan", "Y", 100000,
   2018, "Kazakhstan", "Y", 0,
   2018, "Singapore", "Y", 1600000000,
-  2018, "Thailand", "Y", 82000000,
   2018, "Thailand", "Y", 82000000,
   2019, "Mongolia", "Y", 640000000,
   2019, "Russia", "Y", 130000000,
@@ -562,8 +562,8 @@ civ_01_united_front <- tribble(
    "Cambodia", "Y",
    "Bangladesh", "N",
    "Singapore", "N",
-   "Turkemenistan", "N", 
-   "Uzkbekistan", "N",
+   "Turkmenistan", "N", 
+   "Uzbekistan", "N",
    "Sri Lanka", "N",
    "Maldives", "N"
 )
@@ -606,7 +606,11 @@ civ_04_csps <- pub_dip %>%
          civ_04_csps_ct = content_sharing_partnerships)
 
 ## civ_05_judicial_engagement --------------------------------------
-# Manual update for Supreme People's Court (SPC) and its foreign counterparts in China's 20 land and maritime border neighbors. The data was pulled from press releases on the websites of the SPC, the Shanghai Cooperation Organization (SCO), BRICS, and ASEAN
+# Manual update for Supreme People's Court (SPC) and its foreign counterparts 
+# in China's 20 land and maritime border neighbors. The data was pulled from 
+# press releases on the websites of the SPC, 
+# the Shanghai Cooperation Organization (SCO), BRICS, and ASEAN
+# BGD TKM LKA MDV
 
 civ_05_judicial_engagement <- judicial %>%
   group_by(year, bdl_country) %>%
@@ -819,5 +823,13 @@ setwd(datawrapper)
 # v1.1 2025-06-03 - Include THA, KHM, BGD, SGP, TKM, UZB for map testing
 # write_csv(dash_data, "borderlands_datawrapper_v1.1.csv")
 
-# v1.2 2025-07-05 - Include LKA and MDV for map testing
+# v1.2 2025-07-05 - Include LKA and MDV for map testing, rename countries for 
+# NBR guidelines. 
+table(dash_data$recipient)
+dash_data$recipient[dash_data$recipient == "Brunei Darussalam"] <- "Brunei"
+dash_data$recipient[dash_data$recipient == "Kyrgyz Republic"] <- "Kyrgyzstan"
+dash_data$recipient[dash_data$recipient == "Lao People's Democratic Republic"] <- "Laos"
+dash_data$recipient[dash_data$recipient == "Democratic People's Republic of Korea"] <- "North Korea"
+dash_data$recipient[dash_data$recipient == "Viet Nam"] <- "Vietnam"
+
 write_csv(dash_data, "borderlands_datawrapper_v1.2.csv")
