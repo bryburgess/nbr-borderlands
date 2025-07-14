@@ -14,7 +14,6 @@
   # Last two Countries:
     # "Sri Lanka"
     # "Maldives" 
-# Git push 
 
 
 # Header ------------------------------------------------------------------
