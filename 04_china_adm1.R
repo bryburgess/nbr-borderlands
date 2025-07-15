@@ -153,3 +153,26 @@ china_boundaries <- china_boundaries %>%
 setwd("./china_border_provinces_map")
 plt_to_drive(china_border_plot, "china_border_provinces_map", 
              svg = T, pdf = T, png = T, full_page = T, half_page = T)
+
+(china_border_plot_ry <- ggplot() +
+    geom_sf(data = china_boundaries, 
+            aes(fill =  highlight), 
+            color = "#FFFFFF",
+            lwd = 0,
+    ) + 
+    scale_fill_manual(values = c("#cab64a", "#84344e")) + 
+    labs(x = "",
+         y = "",
+         fill = "Border Province") +
+    theme(panel.grid.minor = element_line(), 
+          panel.background = element_blank(),
+          axis.ticks = element_blank(),
+          axis.text = element_blank(),
+          legend.position = "bottom",
+          legend.box = "vertical",
+          legend.key = element_blank())
+)
+
+plt_to_drive(china_border_plot_ry, "china_border_provinces_map_red_yellow", 
+             svg = T, pdf = T, png = T, full_page = T, half_page = T)
+
